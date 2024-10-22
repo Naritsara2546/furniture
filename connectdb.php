@@ -2,7 +2,7 @@
 // รวมการเชื่อมต่อฐานข้อมูล
 $servername = "localhost";
 $username = "root";
-$password = "2580pA"; // Empty password if not set
+$password = "1478963"; // Empty password if not set
 $dbname = "furnitureshop";
 
 // Create connection
