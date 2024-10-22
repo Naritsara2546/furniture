@@ -163,7 +163,7 @@ header {
       <header>Login</header>
       <form action="" method="post">
         <div class="field input">
-          <label for="email">อีเมล</label>
+          <label for="email">อีเมล อีเมล</label>
           <input type="text" name="email" id="email" autocomplete="off" required>
         </div>
 
