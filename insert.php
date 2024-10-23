@@ -87,25 +87,29 @@ include_once("checklogin.php");
     <hr>
 
     <?php
-    if (isset($_POST['Submit'])) {
-        // ตรวจสอบรูปภาพ
-        $file_name = $_FILES['pimg']['name'];
-        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+if(isset($_POST['Submit'])){
+	
+	//var_dump($_FILES['pimg']['name']); exit;
+	$file_name = $_FILES['pimg']['name'] ;
+	$ext = substr( $file_name , strpos( $file_name , '.' )+1 ) ;
+	
+	$sql = "INSERT INTO `product` (`p_id`, `p_name`, `p_detail`, `P_price`, `p_picture`, `pt_id`) VALUES (NULL, '{$_POST['pname']}', '{$_POST['pdetail']}', '{$_POST['Pprice']}', '{$ext}', '{$_POST['pcat']}') ;";
+	mysqli_query($conn, $sql)  or die ("เพิ่มข้อมูลสินค้าไม่ได้");
+	$idauto = mysqli_insert_id($conn);
+	
+	copy($_FILES['pimg']['tmp_name'], "images/".$idauto.".".$ext) ;
+	
+	echo "<script>";
+	echo "alert('เพิ่มข้อมูลสินค้าสำเร็จ');";
+	echo "window.location='home2.php';";
+	echo "</script>";
+}
+?>
 
-        // SQL INSERT
-        $sql = "INSERT INTO `product` (`p_id`, `p_name`, `p_detail`, `p_price`, `p_picture`, `pt_id`) 
-                VALUES (NULL, '{$_POST['pname']}', '{$_POST['pdetail']}', '{$_POST['pprice']}', '{$file_name}', '{$_POST['pcat']}');";
-        
-        if (mysqli_query($conn, $sql)) {
-            $idauto = mysqli_insert_id($conn);
-            move_uploaded_file($_FILES['pimg']['tmp_name'], "images/" . $idauto . "." . $ext);
-            echo "<script>alert('เพิ่มข้อมูลสินค้าสำเร็จ'); window.location='home2.php';</script>";
-        } else {
-            echo "เพิ่มข้อมูลสินค้าไม่สำเร็จ: " . mysqli_error($conn);
-        }
-    }
 
-    mysqli_close($conn);
-    ?>
+
+<?php	
+	mysqli_close($conn);
+?>
 </body>
 </html>
