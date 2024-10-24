@@ -1,6 +1,3 @@
-<?php 
-            include("connectdb.php");
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,7 +149,7 @@
                         echo "<a href='index.php'><button class='btn'>Login Now</button>";
                     } else {
                         echo "<div class='message'>
-                                  <p>Error occurred during registration. Please try again.</p>
+                                  <p>Error occurred during registration. Please try again. Error: " . $insert_stmt->error . "</p>
                               </div>";
                     }
                     $insert_stmt->close();
