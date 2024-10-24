@@ -2,28 +2,28 @@
 session_start();
 include_once("connectdb.php");
 
-// Handle updating cart quantities
+// การจัดการการอัปเดตจำนวนสินค้าในตะกร้า
 if (isset($_POST['update_cart'])) {
     $product_id = $_POST['product_id'];
     $action = $_POST['update_cart']; 
 
-    // Initialize cart if it doesn't exist
+    // กำหนดตะกร้าถ้ายังไม่มี
     if (!isset($_SESSION['cart'])) {
         $_SESSION['cart'] = [];
     }
 
-    // Update the quantity based on the action
+    // อัปเดตจำนวนสินค้าตามการกระทำ
     if ($action === 'add') {
         if (isset($_SESSION['cart'][$product_id])) {
-            $_SESSION['cart'][$product_id] += 1; // Increase quantity
+            $_SESSION['cart'][$product_id] += 1; // เพิ่มจำนวนสินค้า
         } else {
-            $_SESSION['cart'][$product_id] = 1; // Set quantity to 1
+            $_SESSION['cart'][$product_id] = 1; // กำหนดจำนวนสินค้าเป็น 1
         }
     } elseif ($action === 'remove') {
         if (isset($_SESSION['cart'][$product_id]) && $_SESSION['cart'][$product_id] > 1) {
-            $_SESSION['cart'][$product_id] -= 1; // Decrease quantity
+            $_SESSION['cart'][$product_id] -= 1; // ลดจำนวนสินค้า
         } elseif (isset($_SESSION['cart'][$product_id]) && $_SESSION['cart'][$product_id] === 1) {
-            unset($_SESSION['cart'][$product_id]); // Remove item if quantity is 1
+            unset($_SESSION['cart'][$product_id]); // ลบสินค้าถ้าจำนวนเป็น 1
         }
     }
 }
@@ -44,19 +44,25 @@ if (isset($_POST['update_cart'])) {
         .container {
             margin-top: 50px;
         }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Your Shopping Cart</h1>
+    <h1>ตะกร้าสินค้าของคุณ</h1>
     <table class="table">
         <thead>
             <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
-                <th>Action</th>
+                <th>รูปภาพสินค้า</th>
+                <th>ชื่อสินค้า</th>
+                <th>จำนวน</th>
+                <th>ราคา</th>
+                <th>รวม</th>
+                <th>การกระทำ</th>
             </tr>
         </thead>
         <tbody>
@@ -65,7 +71,7 @@ if (isset($_POST['update_cart'])) {
                 $total_price = 0;
 
                 foreach ($_SESSION['cart'] as $product_id => $quantity) {
-                    $sql = "SELECT p_name, p_price FROM product WHERE p_id = ?";
+                    $sql = "SELECT p_name, p_price, p_picture FROM product WHERE p_id = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("i", $product_id);
                     $stmt->execute();
@@ -76,8 +82,10 @@ if (isset($_POST['update_cart'])) {
                         $price = $product['p_price'];
                         $total = $price * $quantity;
                         $total_price += $total;
+                        $product_image = "images/" . htmlspecialchars($product['p_picture']); // สมมุติว่าเก็บรูปภาพในโฟลเดอร์ "images"
 
                         echo "<tr>
+                                <td><img src='$product_image' alt='{$product['p_name']}' class='product-image'></td>
                                 <td>{$product['p_name']}</td>
                                 <td>$quantity</td>
                                 <td>" . number_format($price, 2) . " บาท</td>
@@ -95,19 +103,19 @@ if (isset($_POST['update_cart'])) {
                 }
 
                 echo "<tr>
-                        <td colspan='3' class='text-end'><strong>Total Price:</strong></td>
+                        <td colspan='4' class='text-end'><strong>ราคารวม:</strong></td>
                         <td><strong>" . number_format($total_price, 2) . " บาท</strong></td>
+                        <td></td>
                       </tr>";
             } else {
-                echo "<tr><td colspan='5'>Your cart is empty.</td></tr>";
+                echo "<tr><td colspan='6'>ตะกร้าของคุณว่างเปล่า.</td></tr>";
             }
             ?>
         </tbody>
     </table>
 
-    <a href="payment.php" class="btn btn-dark mt-3">payment</a>
-
-    <a href="home.php" class="btn btn-primary mt-3">Back to Shopping</a>
+    <a href="payment.php" class="btn btn-dark mt-3">ชำระเงิน</a>
+    <a href="home.php" class="btn btn-primary mt-3">กลับไปยังหน้าช้อปปิ้ง</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
