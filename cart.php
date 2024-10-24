@@ -5,7 +5,7 @@ include_once("connectdb.php");
 // Handle updating cart quantities
 if (isset($_POST['update_cart'])) {
     $product_id = $_POST['product_id'];
-    $action = $_POST['update_cart']; 
+    $action = $_POST['update_cart'];
 
     // Initialize cart if it doesn't exist
     if (!isset($_SESSION['cart'])) {
@@ -46,8 +46,7 @@ if (isset($_POST['update_cart'])) {
         }
         .product-image {
             width: 80px;
-            height: 80px;
-            object-fit: cover;
+            height: auto;
         }
     </style>
 </head>
@@ -57,7 +56,7 @@ if (isset($_POST['update_cart'])) {
     <table class="table">
         <thead>
             <tr>
-                <th>Image</th>
+                <th>Product Image</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
                 <th>Price</th>
@@ -82,7 +81,9 @@ if (isset($_POST['update_cart'])) {
                         $price = $product['p_price'];
                         $total = $price * $quantity;
                         $total_price += $total;
-                        $product_image = "images/" . htmlspecialchars($product['p_picture']); // สมมุติว่าเก็บรูปภาพในโฟลเดอร์ "images"
+
+                        // Create image path
+                        $product_image = "images/" . htmlspecialchars($product['p_picture']);
 
                         echo "<tr>
                                 <td><img src='$product_image' alt='{$product['p_name']}' class='product-image'></td>
@@ -105,7 +106,6 @@ if (isset($_POST['update_cart'])) {
                 echo "<tr>
                         <td colspan='4' class='text-end'><strong>Total Price:</strong></td>
                         <td><strong>" . number_format($total_price, 2) . " บาท</strong></td>
-                        <td></td>
                       </tr>";
             } else {
                 echo "<tr><td colspan='6'>Your cart is empty.</td></tr>";
