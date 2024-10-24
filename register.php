@@ -1,3 +1,8 @@
+<?php 
+session_start();
+include("connectdb.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,8 +119,6 @@
     <div class="container">
         <div class="box form-box">
             <?php 
-            include("connectdb.php");
-
             if (isset($_POST['submit'])) {
                 $u_name = $_POST['u_name'];
                 $email = $_POST['email'];
@@ -134,7 +137,7 @@
 
                 if ($result->num_rows != 0) {
                     echo "<div class='message'>
-                              <p>This email is used, Try another One Please!</p>
+                              <p>This email is already in use. Try another one!</p>
                           </div> <br>";
                     echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
                 } else {
@@ -144,12 +147,12 @@
 
                     if ($insert_stmt->execute()) {
                         echo "<div class='message'>
-                                  <p>Registration successfully!</p>
+                                  <p>Registration successful!</p>
                               </div> <br>";
                         echo "<a href='index.php'><button class='btn'>Login Now</button>";
                     } else {
                         echo "<div class='message'>
-                                  <p>Error occurred during registration. Please try again. Error: " . $insert_stmt->error . "</p>
+                                  <p>Error occurred during registration. Please try again.</p>
                               </div>";
                     }
                     $insert_stmt->close();
