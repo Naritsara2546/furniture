@@ -95,9 +95,6 @@ $addressValue = isset($data1['u_address']) ? htmlspecialchars($data1['u_address'
     <label for="age">Age:</label>
     <input type="number" name="age" required value="<?= $ageValue; ?>" min="0"> <!-- Added age field -->
 
-    <label for="u_address">Address:</label>
-    <input type="text" name="u_address" required value="<?= $addressValue; ?>"> <!-- Added address field -->
-
     <button type="submit" name="Submit">Save</button>
 </form>
 </div>
@@ -105,10 +102,10 @@ $addressValue = isset($data1['u_address']) ? htmlspecialchars($data1['u_address'
 <?php
 if (isset($_POST['Submit'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $u_address = mysqli_real_escape_string($conn, $_POST['u_address']); // Get the updated address from the form
+   
 
     // Process the update
-    $sql = "UPDATE userdb SET username = '$username', u_address = '$u_address' WHERE u_id = '$u_id';"; // Update both username and address
+    $sql = "UPDATE userdb SET username = '$username' WHERE u_id = '$u_id';"; // Update both username and address
 
     if (!mysqli_query($conn, $sql)) {
         die("Could not update user information: " . mysqli_error($conn));
