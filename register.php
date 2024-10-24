@@ -1,196 +1,150 @@
 <?php 
 session_start();
-include("connectdb.php");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style/style.css">
-    <title>Register</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+  <meta charset="utf-8" />
+  <title>เข้าสู่ระบบ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* รีเซ็ตสไตล์พื้นฐาน */
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5; /* สีพื้นหลังที่สว่าง */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* ความสูงทั้งหมด */
+}
 
-        body {
-            background: url('images/bg.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
+/* คอนเทนเนอร์สำหรับฟอร์ม */
+.container {
+    background-color: white; /* สีพื้นหลังสีขาวสำหรับฟอร์ม */
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* จำกัดความกว้างของฟอร์ม */
+    padding: 30px; /* เพิ่ม padding สำหรับระยะห่างที่ดีกว่า */
+}
 
-        .container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 90vh;
-        }
+/* สไตล์ฟอร์ม */
+.box {
+    text-align: center; /* จัดให้อยู่กลาง */
+}
 
-        .box {
-            background: #fdfdfd;
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 0 128px 0 rgba(0, 0, 0, 0.1),
-                        0 32px 64px -48px rgba(0, 0, 0, 0.5);
-        }
+/* สไตล์หัวข้อ */
+header {
+    font-size: 28px; /* ขนาดฟอนต์สำหรับหัวข้อ */
+    margin-bottom: 25px; /* ระยะห่างด้านล่างหัวข้อ */
+    color: #333; /* สีเข้มสำหรับหัวข้อ */
+}
 
-        .form-box {
-            width: 100%;
-            max-width: 450px;
-            margin: 0 10px;
-        }
+/* ช่องกรอกข้อมูล */
+.field {
+    margin-bottom: 20px; /* ระยะห่างระหว่างช่อง */
+}
 
-        .form-box header {
-            font-size: 25px;
-            font-weight: 600;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e6e6e6;
-            margin-bottom: 20px; 
-        }
+.field label {
+    display: block; /* การแสดงผลแบบบล็อกสำหรับป้าย */
+    margin-bottom: 5px; /* ระยะห่างด้านล่างป้าย */
+    font-weight: 500; /* น้ำหนักฟอนต์สำหรับป้าย */
+}
 
-        .form-box form .field {
-            display: flex;
-            margin-bottom: 15px; 
-            flex-direction: column;
-        }
+/* ช่องกรอกข้อมูล */
+.field input {
+    width: 100%; /* ความกว้างเต็มที่ */
+    padding: 10px; /* Padding ในช่องกรอก */
+    border: 1px solid #ccc; /* เส้นขอบสีเทา */
+    border-radius: 4px; /* มุมโค้ง */
+    outline: none; /* เอาเส้นขอบออกเมื่อเลือก */
+}
 
-        .form-box form .input input {
-            height: 45px; 
-            width: 100%;
-            font-size: 16px;
-            padding: 0 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
+/* สไตล์ปุ่ม */
+.btn {
+    background-color: #4c44b6; /* สีพื้นหลังของปุ่ม */
+    color: white; /* สีข้อความในปุ่ม */
+    border: none; /* ไม่มีเส้นขอบ */
+    border-radius: 4px; /* มุมโค้ง */
+    padding: 10px; /* Padding ในปุ่ม */
+    cursor: pointer; /* แสดงเป็นตัวชี้เมื่อวางเมาส์ */
+    transition: background-color 0.3s; /* เพิ่มเอฟเฟกต์การเปลี่ยนสี */
+}
 
-        .form-box form .input input:focus {
-            border-color: #4c44b6; 
-        }
+/* เอฟเฟกต์การเลื่อนเมาส์ */
+.btn:hover {
+    background-color: #3e3b93; /* เปลี่ยนสีเมื่อวางเมาส์ */
+}
 
-        .btn {
-            height: 40px; 
-            background: rgba(76, 68, 182, 0.808);
-            border: 0;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all .3s ease;
-            margin-top: 10px;
-            padding: 0 10px;
-        }
+/* ลิงค์ */
+.links {
+    margin-top: 10px; /* ระยะห่างด้านบน */
+}
 
-        .btn:hover {
-            opacity: 0.85;
-            background-color: #4c44b6; 
-        }
-
-        .submit {
-            width: 100%;
-        }
-
-        .links {
-            margin-bottom: 15px;
-        }
-
-        .message {
-            text-align: center;
-            background: #f9eded;
-            padding: 15px 0;
-            border: 1px solid #c71a1a; 
-            border-radius: 5px;
-            margin-bottom: 20px; 
-            color: red;
-        }
-    </style>
+/* สไตล์ข้อความข้อผิดพลาด */
+.message {
+    color: red; /* สีแดงสำหรับข้อความข้อผิดพลาด */
+    margin-top: 10px; /* ระยะห่างด้านบน */
+}
+</style>
 </head>
+
 <body>
     <div class="container">
-        <div class="box form-box">
+        <div class="box">
             <?php 
+            include("connectdb.php");
             if (isset($_POST['submit'])) {
-                $u_name = $_POST['u_name'];
                 $email = $_POST['email'];
-                $age = $_POST['age'];
                 $password = $_POST['password'];
-                $user_type = 'user'; // Set user_type to "user"
 
-                // Hash the password using MD5
+                // แฮชรหัสผ่านด้วย MD5
                 $hashed_password = md5($password);
 
-                // Verifying the unique email
-                $stmt = $conn->prepare("SELECT Email FROM userdb WHERE Email=?");
-                $stmt->bind_param("s", $email);
+                // ตรวจสอบข้อมูลผู้ใช้
+                $stmt = $conn->prepare("SELECT * FROM userdb WHERE Email=? AND password=?");
+                $stmt->bind_param("ss", $email, $hashed_password);
                 $stmt->execute();
                 $result = $stmt->get_result();
 
-                if ($result->num_rows != 0) {
-                    echo "<div class='message'>
-                              <p>This email is already in use. Try another one!</p>
-                          </div> <br>";
-                    echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
+                if ($result->num_rows == 1) {
+                    $row = $result->fetch_assoc();
+                    $_SESSION['u_id'] = $row['u_id'];
+                    $_SESSION['username'] = $row['username'];
+                    header("Location: home.php");
+                    exit();
                 } else {
-                    // Insert the new user
-                    $insert_stmt = $conn->prepare("INSERT INTO userdb (username, Email, Age, password, user_type) VALUES (?, ?, ?, ?, ?)");
-                    $insert_stmt->bind_param("ssiss", $u_name, $email, $age, $hashed_password, $user_type);
-
-                    if ($insert_stmt->execute()) {
-                        echo "<div class='message'>
-                                  <p>Registration successful!</p>
-                              </div> <br>";
-                        echo "<a href='index.php'><button class='btn'>Login Now</button>";
-                    } else {
-                        echo "<div class='message'>
-                                  <p>Error occurred during registration. Please try again.</p>
-                              </div>";
-                    }
-                    $insert_stmt->close();
+                    echo "<p class='message'>อีเมลหรือรหัสผ่านไม่ถูกต้อง!</p>";
                 }
                 $stmt->close();
-            } else {
+            }
             ?>
-                <header>Sign Up</header>
-                <form action="" method="post">
-                    <div class="field input">
-                        <label for="u_name">Username</label>
-                        <input type="text" name="u_name" id="u_name" autocomplete="off" required>
-                    </div>
-
-                    <div class="field input">
-                        <label for="email">Email</label>
-                        <input type="text" name="email" id="email" autocomplete="off" required>
-                    </div>
-
-                    <div class="field input">
-                        <label for="age">Age</label>
-                        <input type="number" name="age" id="age" autocomplete="off" required>
-                    </div>
-
-                    <div class="field input">
-                        <label for="password">Password</label>
-                        <input type="password" name="password" id="password" autocomplete="off" required>
-                    </div>
-
-                    <div class="field">
-                        <input type="submit" class="btn" name="submit" value="Register" required>
-                    </div>
-                    <div class="links">
-                        Already a member? <a href="index.php">Login Here</a>
-                    </div>
-                </form>
-            <?php } ?>
+            <header>เข้าสู่ระบบ</header>
+            <form action="" method="post">
+                <div class="field">
+                    <label for="email">อีเมล</label>
+                    <input type="text" name="email" id="email" required>
+                </div>
+                <div class="field">
+                    <label for="password">รหัสผ่าน</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <input type="submit" class="btn" name="submit" value="เข้าสู่ระบบ">
+                <div class="links">
+                    ยังไม่มีบัญชี? <a href="register.php">ลงทะเบียนที่นี่</a>
+                </div>
+            </form>
         </div>
     </div>
 </body>
+
 </html>
