@@ -1,34 +1,49 @@
 <?php 
 session_start();
-include("connectdb.php");
+include("connectdb.php"); // เชื่อมต่อฐานข้อมูล
 
 if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $age = $_POST['age'];
     $password = $_POST['password'];
-    $user_type = 'user'; // Set user_type to "user"
+    $user_type = 'user'; // ตั้งค่า user_type เป็น "user"
 
-    // Verifying the unique email
-    $verify_query = mysqli_query($conn, "SELECT Email FROM users WHERE Email='$email'");
+    // การตรวจสอบอีเมลที่ไม่ซ้ำกัน
+    $verify_query = $conn->prepare("SELECT Email FROM userdb WHERE Email=?");
+    $verify_query->bind_param("s", $email);
+    $verify_query->execute();
+    $result = $verify_query->get_result();
 
-    if (mysqli_num_rows($verify_query) != 0) {
+    if ($result->num_rows != 0) {
         echo "<div class='message'>
                   <p>This email is already in use. Please try another one!</p>
               </div> <br>";
         echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
     } else {
-        // Inserting user data into the database
-        mysqli_query($conn, "INSERT INTO userdb(username, Email, Age, password, user_type) VALUES('$username', '$email', '$age', '$password', '$user_type')") or die("Error Occurred");
+        // แฮชรหัสผ่านด้วย MD5
+        $hashed_password = md5($password); 
 
-        echo "<div class='message'>
-                  <p>Registration successful!</p>
-              </div> <br>";
-        
-        // Redirect to display_users.php after successful registration
-        header("Location: index.php");
-        exit();
+        // แทรกข้อมูลผู้ใช้ใหม่ลงในฐานข้อมูล
+        $insert_stmt = $conn->prepare("INSERT INTO userdb(username, Email, Age, password, user_type) VALUES(?, ?, ?, ?, ?)");
+        $insert_stmt->bind_param("ssiss", $username, $email, $age, $hashed_password, $user_type);
+
+        if ($insert_stmt->execute()) {
+            echo "<div class='message'>
+                      <p>Registration successful!</p>
+                  </div> <br>";
+            
+            // เปลี่ยนเส้นทางไปยัง index.php หลังจากลงทะเบียนสำเร็จ
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "<div class='message'>
+                      <p>Error occurred: " . $insert_stmt->error . "</p>
+                  </div>";
+        }
+        $insert_stmt->close();
     }
+    $verify_query->close();
 } else {
 ?>
 
@@ -51,8 +66,8 @@ if (isset($_POST['submit'])) {
         }
 
         body {
-            background: url('images/back.jpg') no-repeat center center fixed; /* Update the image path */
-            background-size: cover; /* Ensures the image covers the entire background */
+            background: url('images/back.jpg') no-repeat center center fixed; 
+            background-size: cover; 
         }
 
         .container {
