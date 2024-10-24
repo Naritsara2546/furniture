@@ -1,53 +1,3 @@
-<?php 
-session_start();
-include("connectdb.php"); // เชื่อมต่อฐานข้อมูล
-
-if (isset($_POST['submit'])) {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $age = $_POST['age'];
-    $password = $_POST['password'];
-    $user_type = 'user'; // ตั้งค่า user_type เป็น "user"
-
-    // การตรวจสอบอีเมลที่ไม่ซ้ำกัน
-    $verify_query = $conn->prepare("SELECT Email FROM userdb WHERE Email=?");
-    $verify_query->bind_param("s", $email);
-    $verify_query->execute();
-    $result = $verify_query->get_result();
-
-    if ($result->num_rows != 0) {
-        echo "<div class='message'>
-                  <p>This email is already in use. Please try another one!</p>
-              </div> <br>";
-        echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
-    } else {
-        
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-
-        // แทรกข้อมูลผู้ใช้ใหม่ลงในฐานข้อมูล
-        $insert_stmt = $conn->prepare("INSERT INTO userdb(username, Email, Age, password, user_type) VALUES(?, ?, ?, ?, ?)");
-        $insert_stmt->bind_param("ssiss", $username, $email, $age, $hashed_password, $user_type);
-
-        if ($insert_stmt->execute()) {
-            echo "<div class='message'>
-                      <p>Registration successful!</p>
-                  </div> <br>";
-            
-            // เปลี่ยนเส้นทางไปยัง index.php หลังจากลงทะเบียนสำเร็จ
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "<div class='message'>
-                      <p>Error occurred: " . $insert_stmt->error . "</p>
-                  </div>";
-        }
-        $insert_stmt->close();
-    }
-    $verify_query->close();
-} else {
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,8 +17,8 @@ if (isset($_POST['submit'])) {
         }
 
         body {
-            background: url('images/back.jpg') no-repeat center center fixed; 
-            background-size: cover; 
+            background: url('images/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
         }
 
         .container {
@@ -163,35 +113,81 @@ if (isset($_POST['submit'])) {
 <body>
     <div class="container">
         <div class="box form-box">
-            <header>Sign Up</header>
-            <form action="" method="post">
-                <div class="field input">
-                    <label for="username">ชื่อ-สกุล</label>
-                    <input type="text" name="username" id="username" autocomplete="off" required>
-                </div>
+            <?php 
+            include("connectdb.php");
 
-                <div class="field input">
-                    <label for="email">อีเมล</label>
-                    <input type="text" name="email" id="Email" autocomplete="off" required>
-                </div>
-                <div class="field input">
-                    <label for="age">อายุ</label>
-                    <input type="number" name="age" id="Age" autocomplete="off" required>
-                </div>
-                <div class="field input">
-                    <label for="password">รหัสผ่าน</label>
-                    <input type="password" name="password" id="password" autocomplete="off" required>
-                </div>
+            if (isset($_POST['submit'])) {
+                $u_name = $_POST['u_name'];
+                $email = $_POST['email'];
+                $age = $_POST['age'];
+                $password = $_POST['password'];
+                $user_type = 'user'; // Set user_type to "user"
 
-                <div class="field">
-                    <input type="submit" class="btn" name="submit" value="Register" required>
-                </div>
-                <div class="links">
-                    เป็นสมาชิกอยู่แล้ว? <a href="index.php">เข้าสู่ระบบ</a>
-                </div>
-            </form>
+                // Hash the password
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                // Verifying the unique email
+                $stmt = $conn->prepare("SELECT Email FROM userdb WHERE Email=?");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows != 0) {
+                    echo "<div class='message'>
+                              <p>This email is used, Try another One Please!</p>
+                          </div> <br>";
+                    echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
+                } else {
+                    // Insert the new user
+                    $insert_stmt = $conn->prepare("INSERT INTO userdb (username, Email, Age, password, user_type) VALUES (?, ?, ?, ?, ?)");
+                    $insert_stmt->bind_param("ssiss", $u_name, $email, $age, $hashed_password, $user_type);
+
+                    if ($insert_stmt->execute()) {
+                        echo "<div class='message'>
+                                  <p>Registration successfully!</p>
+                              </div> <br>";
+                        echo "<a href='index.php'><button class='btn'>Login Now</button>";
+                    } else {
+                        echo "<div class='message'>
+                                  <p>Error occurred during registration. Please try again.</p>
+                              </div>";
+                    }
+                    $insert_stmt->close();
+                }
+                $stmt->close();
+            } else {
+            ?>
+                <header>Sign Up</header>
+                <form action="" method="post">
+                    <div class="field input">
+                        <label for="u_name">Username</label>
+                        <input type="text" name="u_name" id="u_name" autocomplete="off" required>
+                    </div>
+
+                    <div class="field input">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id="email" autocomplete="off" required>
+                    </div>
+
+                    <div class="field input">
+                        <label for="age">Age</label>
+                        <input type="number" name="age" id="age" autocomplete="off" required>
+                    </div>
+
+                    <div class="field input">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" autocomplete="off" required>
+                    </div>
+
+                    <div class="field">
+                        <input type="submit" class="btn" name="submit" value="Register" required>
+                    </div>
+                    <div class="links">
+                        Already a member? <a href="index.php">Login Here</a>
+                    </div>
+                </form>
+            <?php } ?>
         </div>
     </div>
 </body>
 </html>
-<?php } ?>
