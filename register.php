@@ -10,7 +10,7 @@ if (isset($_POST['submit'])) {
     $user_type = 'user'; // Set user_type to "user"
 
     // Verifying the unique email
-    $verify_query = mysqli_query($con, "SELECT Email FROM users WHERE Email='$email'");
+    $verify_query = mysqli_query($conn, "SELECT Email FROM users WHERE Email='$email'");
 
     if (mysqli_num_rows($verify_query) != 0) {
         echo "<div class='message'>
@@ -156,11 +156,11 @@ if (isset($_POST['submit'])) {
 
                 <div class="field input">
                     <label for="email">อีเมล</label>
-                    <input type="text" name="email" id="email" autocomplete="off" required>
+                    <input type="text" name="email" id="Email" autocomplete="off" required>
                 </div>
                 <div class="field input">
                     <label for="age">อายุ</label>
-                    <input type="number" name="age" id="age" autocomplete="off" required>
+                    <input type="number" name="age" id="Age" autocomplete="off" required>
                 </div>
                 <div class="field input">
                     <label for="password">รหัสผ่าน</label>
