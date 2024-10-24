@@ -184,9 +184,6 @@ header {
         <div class="links">
           ยังไม่เป็นสมาชิก? <a href="register.php">สมัครสมาชิก</a>
         </div>
-        <div class="links">
-           <a href="adminlogin.php">admin login</a>
-        </div>
       </form>
     </div>
   </div>
