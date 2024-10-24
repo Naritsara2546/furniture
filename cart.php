@@ -86,8 +86,8 @@ if (isset($_POST['update_cart'])) {
                         $product_image = "images/" . htmlspecialchars($product['p_picture']);
 
                         echo "<tr>
-                                <td><img src='$product_image' alt='{$product['p_name']}' class='product-image'></td>
-                                <td>{$product['p_name']}</td>
+                                <td><img src='$product_image' alt='" . htmlspecialchars($product['p_name']) . "' class='product-image'></td>
+                                <td>" . htmlspecialchars($product['p_name']) . "</td>
                                 <td>$quantity</td>
                                 <td>" . number_format($price, 2) . " บาท</td>
                                 <td>" . number_format($total, 2) . " บาท</td>
@@ -114,7 +114,7 @@ if (isset($_POST['update_cart'])) {
         </tbody>
     </table>
 
-    <a href="payment.php" class="btn btn-dark mt-3">payment</a>
+    <a href="payment.php" class="btn btn-dark mt-3">Payment</a>
     <a href="home.php" class="btn btn-primary mt-3">Back to Shopping</a>
 </div>
 
