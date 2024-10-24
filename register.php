@@ -19,7 +19,7 @@ if (isset($_POST['submit'])) {
         echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
     } else {
         // Inserting user data into the database
-        mysqli_query($con, "INSERT INTO usersdb(Username, Email, Age, Password, user_type) VALUES('$username', '$email', '$age', '$password', '$user_type')") or die("Error Occurred");
+        mysqli_query($conn, "INSERT INTO usersdb(Username, Email, Age, Password, user_type) VALUES('$username', '$email', '$age', '$password', '$user_type')") or die("Error Occurred");
 
         echo "<div class='message'>
                   <p>Registration successful!</p>
@@ -158,11 +158,6 @@ if (isset($_POST['submit'])) {
                     <label for="email">อีเมล</label>
                     <input type="text" name="email" id="email" autocomplete="off" required>
                 </div>
-                <div class="field input">
-                    <label for="adr">ที่อยู่</label>
-                    <input type="text" name="adr" id="adr" autocomplete="off" required>
-                </div>
-
                 <div class="field input">
                     <label for="age">อายุ</label>
                     <input type="number" name="age" id="age" autocomplete="off" required>
