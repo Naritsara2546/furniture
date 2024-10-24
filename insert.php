@@ -74,7 +74,7 @@ include_once("checklogin.php");
         <select name="pcat">
         <?php	
         include_once("connectdb.php");
-        $sql2 = "SELECT * FROM `product_type` ORDER BY pt_name ASC ";
+        $sql2 = "SELECT * FROM `product_type` ORDER BY pt_name ASC";
         $rs2 = mysqli_query($conn, $sql2);
         while ($data2 = mysqli_fetch_array($rs2)) {
         ?>
@@ -87,29 +87,38 @@ include_once("checklogin.php");
     <hr>
 
     <?php
-if(isset($_POST['Submit'])){
-	
-	//var_dump($_FILES['pimg']['name']); exit;
-	$file_name = $_FILES['pimg']['name'] ;
-	$ext = substr( $file_name , strpos( $file_name , '.' )+1 ) ;
-	
-	$sql = "INSERT INTO `product` (`p_id`, `p_name`, `p_detail`, `P_price`, `p_picture`, `pt_id`) VALUES (NULL, '{$_POST['pname']}', '{$_POST['pdetail']}', '{$_POST['Pprice']}', '{$ext}', '{$_POST['pcat']}') ;";
-	mysqli_query($conn, $sql)  or die ("เพิ่มข้อมูลสินค้าไม่ได้");
-	$idauto = mysqli_insert_id($conn);
-	
-	copy($_FILES['pimg']['tmp_name'], "images/".$idauto.".".$ext) ;
-	
-	echo "<script>";
-	echo "alert('เพิ่มข้อมูลสินค้าสำเร็จ');";
-	echo "window.location='home2.php';";
-	echo "</script>";
-}
-?>
+    if (isset($_POST['Submit'])) {
+        // ตรวจสอบรูปภาพ
+        $file_name = $_FILES['pimg']['name'];
+        $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+        
+        // ตรวจสอบว่ามีการกรอกข้อมูลราคาถูกต้อง
+        if (!is_numeric($_POST['pprice'])) {
+            echo "<script>alert('กรุณากรอกราคาที่ถูกต้อง');</script>";
+            exit;
+        }
 
-
-
-<?php	
-	mysqli_close($conn);
-?>
+        // SQL INSERT
+        $sql = "INSERT INTO `product` (`p_id`, `p_name`, `p_detail`, `p_price`, `p_picture`, `pt_id`) 
+                VALUES (NULL, '{$_POST['pname']}', '{$_POST['pdetail']}', '{$_POST['pprice']}', '', '{$_POST['pcat']}')";
+        
+        if (mysqli_query($conn, $sql)) {
+            $idauto = mysqli_insert_id($conn);
+            $new_file_name = $idauto . "." . $ext;
+            
+            // อัปเดตชื่อไฟล์ในฐานข้อมูล
+            $sql_update = "UPDATE `product` SET `p_picture` = '{$new_file_name}' WHERE `p_id` = {$idauto}";
+            mysqli_query($conn, $sql_update);
+            
+            // ย้ายไฟล์ไปยังโฟลเดอร์ images พร้อมชื่อไฟล์ที่ถูกต้อง
+            move_uploaded_file($_FILES['pimg']['tmp_name'], "images/" . $new_file_name);
+            
+            echo "<script>alert('เพิ่มข้อมูลสินค้าสำเร็จ'); window.location='home2.php';</script>";
+        } else {
+            echo "เพิ่มข้อมูลสินค้าไม่สำเร็จ: " . mysqli_error($conn);
+        }
+    }
+    mysqli_close($conn);
+    ?>
 </body>
 </html>
