@@ -21,8 +21,9 @@ if (isset($_POST['submit'])) {
               </div> <br>";
         echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
     } else {
-        // แฮชรหัสผ่านด้วย MD5
-        $hashed_password = md5($password); 
+        
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
 
         // แทรกข้อมูลผู้ใช้ใหม่ลงในฐานข้อมูล
         $insert_stmt = $conn->prepare("INSERT INTO userdb(username, Email, Age, password, user_type) VALUES(?, ?, ?, ?, ?)");
