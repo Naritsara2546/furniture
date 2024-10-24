@@ -19,7 +19,7 @@ if (isset($_POST['submit'])) {
         echo "<a href='javascript:self.history.back()'><button class='btn'>Go Back</button>";
     } else {
         // Inserting user data into the database
-        mysqli_query($conn, "INSERT INTO usersdb(Username, Email, Age, Password, user_type) VALUES('$username', '$email', '$age', '$password', '$user_type')") or die("Error Occurred");
+        mysqli_query($conn, "INSERT INTO userdb(Username, Email, Age, password, user_type) VALUES('$username', '$email', '$age', '$password', '$user_type')") or die("Error Occurred");
 
         echo "<div class='message'>
                   <p>Registration successful!</p>
