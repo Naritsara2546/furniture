@@ -123,8 +123,8 @@
                 $password = $_POST['password'];
                 $user_type = 'user'; // Set user_type to "user"
 
-                // Hash the password
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                // Hash the password using MD5
+                $hashed_password = md5($password);
 
                 // Verifying the unique email
                 $stmt = $conn->prepare("SELECT Email FROM userdb WHERE Email=?");
