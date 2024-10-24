@@ -103,9 +103,17 @@ if (isset($_POST['Submit'])) {
         $sql = "UPDATE product SET p_name = '{$p_name}', p_detail = '{$p_detail}', p_price = '{$p_price}', pt_id = '{$pt_id}' WHERE p_id = '{$p_id}'";
     } else {
         // Update with a new image
+        $old_image = $data1['p_picture'];
         $file_name = $_FILES['pimg']['name'];
         $ext = pathinfo($file_name, PATHINFO_EXTENSION);
-        $new_image_name = "{$p_id}.{$ext}";
+        $new_image_name = "{$p_id}_" . time() . ".{$ext}";
+
+        // Delete the old image if it exists
+        if (!empty($old_image) && file_exists("images/{$old_image}")) {
+            unlink("images/{$old_image}");
+        }
+
+        // Update with new image name
         $sql = "UPDATE product SET p_name = '{$p_name}', p_detail = '{$p_detail}', p_price = '{$p_price}', pt_id = '{$pt_id}', p_picture = '{$new_image_name}' WHERE p_id = '{$p_id}'";
 
         // Move the uploaded file
